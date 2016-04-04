@@ -1,0 +1,2 @@
+add_executable(string_test string_test.cc)
+target_link_libraries(string_test gtest gtest_main drillstatic pthread)

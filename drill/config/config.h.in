@@ -1,0 +1,27 @@
+#ifndef DRILL_CONFIG_CONFIG_H_
+#define DRILL_CONFIG_CONFIG_H_
+
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wunused-variable" 
+
+
+
+#define PROJECT_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define PROJECT_VERSION_MINOR @PROJECT_VERSION_MINOR@
+
+#define SYSTEM_NAME "@SYSTEM_NAME@"
+
+
+#define SYSTEM_BIGEND         @SYSTEM_BIGEND@
+
+#define SYSTEM_PAGESIZE       @SYSTEM_PAGESIZE@
+
+#define SYSTEM_PLATE          "@SYSTEM_PLATE@"
+
+#cmakedefine ENABLE_C11
+
+#cmakedefine DEBUG
+
+
+#endif
