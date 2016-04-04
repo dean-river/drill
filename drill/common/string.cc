@@ -1,6 +1,7 @@
-#include <drill/common/string.hpp>
+#include <drill/common/string.h>
 #include <iomanip>
 #include <cstring>
+#include <cstdio>
 
 namespace drill {
 namespace common {
@@ -75,97 +76,134 @@ std::string hex_encode(const std::string &s)
 {
 	return hex_encode(s.data(), s.size());
 }
+size_t string_split(const std::string& str, char delim, 
+					 std::vector<std::string>& elems)
+{
 
-std::vector<std::string> split(
-    const std::string& str, char sep, std::string::size_type limit) {
-
-    std::vector<std::string> out;
-    if (limit == 0) return out;
-
-    std::string::const_iterator it = str.begin(), last = it;
-
-    for ( ; it != str.end(); ++it)
-    {
-        if (*it == sep)
-        {
-            if (out.size() + 1 >= limit)
-            {
-                out.push_back(std::string(last, str.end()));
-                return out;
-            }
-
-            out.push_back(std::string(last, it));
-            last = it + 1;
-        }
+  elems.clear();
+  std::string::const_iterator it = str.begin();
+  std::string::const_iterator pv = it;
+  while (it != str.end()) {
+    if (*it == delim) {
+      std::string col(pv, it);
+      elems.push_back(col);
+      pv = it + 1;
     }
+    ++it;
+  }
+  std::string col(pv, it);
+  elems.push_back(col);
+  return elems.size();
 
-    out.push_back(std::string(last, it));
-    return out;
+}
+std::string format_addr_hex(uintptr_t value)
+{
+        const char digitsHex[] = "0123456789ABCDEF";
+        char buf[128];
+        uintptr_t i = value;
+	    char* p = buf;
+	
+	    do {
+		    int lsd = i % 16;
+		    i /= 16;
+		    *p++ = digitsHex[lsd];
+	    } while (i != 0);
+	
+	    *p = '\0';
+	    std::reverse(buf, p);
+	
+	  return std::string(buf, p - buf);
 }
 
-std::vector<std::string> split(
-    const std::string& str, const std::string& sepstr,
-    std::string::size_type limit) {
-
-    std::vector<std::string> out;
-    if (limit == 0) return out;
-    if (sepstr.empty()) return out;
-
-    std::string::const_iterator it = str.begin(), last = it;
-
-    for ( ; it + sepstr.size() < str.end(); ++it)
-    {
-        if (std::equal(sepstr.begin(), sepstr.end(), it))
-        {
-            if (out.size() + 1 >= limit)
-            {
-                out.push_back(std::string(last, str.end()));
-                return out;
-            }
-
-            out.push_back(std::string(last, it));
-            last = it + sepstr.size();
-        }
+std::string  format_double(const double &value)
+{
+	char buff[32];
+	snprintf(buff, sizeof(buff)-1, "%.12g",value);
+	return std::string(buff);
+}
+size_t string_split(const std::string& str, const std::string& delims,
+			 std::vector<std::string>& elems)
+{
+  elems.clear();
+  std::string::const_iterator it = str.begin();
+  std::string::const_iterator pv = it;
+  while (it != str.end()) {
+    while (delims.find(*it, 0) != std::string::npos) {
+      std::string col(pv, it);
+      elems.push_back(col);
+      pv = it + 1;
+      break;
     }
-
-    out.push_back(std::string(last, str.end()));
-    return out;
+    ++it;
+  }
+  std::string col(pv, it);
+  elems.push_back(col);
+  return elems.size();
 }
 
-std::vector<std::string>
-split(const std::string& str, const std::string& sep,
-      unsigned int min_fields, unsigned int limit_fields) {
-    std::vector<std::string> result;
-    if (str.empty()) {
-        result.resize(min_fields);
-        return result;
-    }
-
-    std::string::size_type cur_pos(0), last_pos(0);
-    while (1)
-    {
-        if (result.size() + 1 == limit_fields)
-            break;
-
-        cur_pos = str.find(sep, last_pos);
-        if (cur_pos == std::string::npos)
-            break;
-
-        result.push_back(
-            str.substr(last_pos,
-                       std::string::size_type(cur_pos - last_pos)));
-
-        last_pos = cur_pos + sep.size();
-    }
-
-    std::string sub = str.substr(last_pos);
-    result.push_back(sub);
-
-    if (result.size() < min_fields)
-        result.resize(min_fields);
-
-    return result;
+int64_t string_to_int(const std::string &str)
+{
+	return string_to_int(str.data(), str.size());
 }
+
+int64_t string_to_int(const char *buff, size_t len)
+{	
+	const char *str = buff;
+	const char *end = buff+len;
+	while (str !=end && *str > '\0' && *str <= ' ') {
+    	str++;
+  	}
+	if(str == end) {
+		return 0L;
+	}
+  	int32_t sign = 1;
+  	int64_t num = 0;
+	
+  	if (*str == '-') {
+    	str++;
+    	sign = -1;
+  	} else if (*str == '+') {
+    	str++;
+  	}
+  	while (str != end && *str != '\0') {
+    	if (*str < '0' || *str > '9') 
+			break;
+   		num = num * 10 + *str - '0';
+    	str++;
+  }
+  return num * sign;
+}
+
+int64_t	string_to_inth(const std::string &str)
+{
+	return string_to_inth(str.data(), str.size());
+}
+int64_t string_to_inth(const char *buff, size_t len)
+{
+	const char *str = buff;
+	const char *end = buff + len;
+	while (str != end && *str > '\0' && *str <= ' ') {
+    	str++;
+  	}
+  	if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X')) {
+    	str += 2;
+  	}
+  	int64_t num = 0;
+ 	 while (str != end) {
+    	if (*str >= '0' && *str <= '9') {
+      		num = num * 0x10 + *str - '0';
+    	} else if (*str >= 'a' && *str <= 'f') {
+      		num = num * 0x10 + *str - 'a' + 10;
+    	} else if (*str >= 'A' && *str <= 'F') {
+     		 num = num * 0x10 + *str - 'A' + 10;
+    	} else {
+      		break;
+   		}
+    	str++;
+  	}
+  return num;
+}
+
 
 std::string& replace_all(std::string& str, const std::string& needle,
                         const std::string& instead)

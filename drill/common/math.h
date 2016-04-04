@@ -7,12 +7,12 @@
 #include <limits>
 #include <ostream>
 
-namespace thrill {
+namespace drill {
 namespace common {
 
 
 template <typename IntegerType>
-static inline unsigned int integerLog2Floor(IntegerType i) {
+static inline unsigned int integer_log2_floor(IntegerType i) {
     unsigned int p = 0;
     while (i >= 256) i >>= 8, p += 8;
     while (i >>= 1) ++p;
@@ -21,14 +21,14 @@ static inline unsigned int integerLog2Floor(IntegerType i) {
 
 //! calculate the log2 ceiling of an integer type (by repeated bit shifts)
 template <typename IntegerType>
-static inline unsigned int integerLog2Ceil(const IntegerType& i) {
+static inline unsigned int integer_log2_ceil(const IntegerType& i) {
     if (i <= 1) return 0;
-    return IntegerLog2Floor(i - 1) + 1;
+    return integer_log2_floor(i - 1) + 1;
 }
 
 //! does what it says.
 template <typename Integral>
-static inline Integral roundUpToPowerOfTwo(Integral n) {
+static inline Integral roundup_power_two(Integral n) {
     --n;
     for (size_t k = 1; k != 8 * sizeof(n); k <<= 1) {
         n |= n >> k;
@@ -39,12 +39,12 @@ static inline Integral roundUpToPowerOfTwo(Integral n) {
 
 //! does what it says.
 template <typename Integral>
-static inline Integral roundDownToPowerOfTwo(Integral n) {
-    return RoundUpToPowerOfTwo(n + 1) >> 1;
+static inline Integral rounddown_power_two(Integral n) {
+    return roundup_power_two(n + 1) >> 1;
 }
 
 //! does what it says.
-static inline bool isPowerOfTwo(size_t i) {
+static inline bool is_power_two(size_t i) {
     if (i <= 0) return false;
     return ! (i & (i - 1));
 }
@@ -96,7 +96,7 @@ T abs_diff(const T& a, const T& b) {
 
 //! calculate n div k with rounding up
 template <typename IntegerType>
-static inline IntegerType integerDivRoundUp(const IntegerType& n, const IntegerType& k) {
+static inline IntegerType integer_div_roundup(const IntegerType& n, const IntegerType& k) {
     return (n + k - 1) / k;
 }
 
@@ -164,7 +164,7 @@ static inline Range calculateLocalRange(size_t global_size, size_t p, size_t i)
 /*!
  * Number of rounds in Perfect Matching (1-Factor).
  */
-static inline size_t calcOneFactorSize(size_t n) {
+static inline size_t calc_one_factor_size(size_t n) {
     return n % 2 == 0 ? n - 1 : n;
 }
 
@@ -177,8 +177,8 @@ static inline size_t calcOneFactorSize(size_t n) {
  * \param n number of processors (graph size)
  * \return peer processor in this round
  */
-static inline size_t calcOneFactorPeer(size_t r, size_t p, size_t n) {
-    assert(r < calcOneFactorSize(n));
+static inline size_t calc_one_factor_peer(size_t r, size_t p, size_t n) {
+    assert(r < calc_one_factor_size(n));
     assert(p < n);
 
     if (n % 2 == 0) {

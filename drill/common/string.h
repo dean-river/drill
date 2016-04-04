@@ -39,12 +39,36 @@ bool end_with(const std::string& str, const std::string& match)
                       str.end() - match.size());
 }
 
-template <typename Type>
+int64_t string_to_int(const std::string &str);
+
+int64_t string_to_int(const char *buff, size_t len);
+int64_t	string_to_inth(const std::string &str);
+int64_t string_to_inth(const char *buff, size_t len);
+
+
+template <typename T>
 static inline
-std::string to_str(const Type& t) {
-    std::ostringstream oss;
-    oss << t;
-    return oss.str();
+std::string to_str(const T& value) {
+	  const char digits[] = "9876543210123456789";
+	  const char* zero = digits + 9;
+	  char buf[128];
+	  T i = value;
+	  char* p = buf;
+	
+	do {
+	  int lsd = static_cast<int>(i % 10);
+	  i /= 10;
+	  *p++ = zero[lsd];
+	} while (i != 0);
+	
+	if (value < 0) {
+	  *p++ = '-';
+	}
+	*p = '\0';
+	std::reverse(buf, p);
+	
+	return std::string(buf, p - buf);
+
 }
 
 template <typename Type>
@@ -55,18 +79,11 @@ bool from_str(const std::string& str, Type& outval) {
     return is.eof();
 }
 
-std::vector<std::string> split(
-    const std::string& str, char sep,
-    std::string::size_type limit = std::string::npos);
+size_t string_split(const std::string& str, char delim, std::vector<std::string>& elems);
 
-std::vector<std::string> split(
-    const std::string& str, const std::string& sepstr,
-    std::string::size_type limit = std::string::npos);
+size_t string_split(const std::string& str, const std::string& delims,
+			  std::vector<std::string>& elems);
 
-
-std::vector<std::string> split(const std::string& str, const std::string& sep,
-      unsigned int min_fields,
-      unsigned int limit_fields = std::numeric_limits<unsigned int>::max());
 
 template <typename Iterator, typename Glue>
 static inline
@@ -128,6 +145,8 @@ std::string format_si_size(uint64_t number);
 **********************************/
 std::string format_lec_size(uint64_t number);
 
+std::string format_addr_hex(uintptr_t value);
+std::string  format_double(const double &value);
 
 }//common end
 }//drill end
