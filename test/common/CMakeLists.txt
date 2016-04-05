@@ -15,3 +15,7 @@ target_link_libraries(matrix_test gtest gtest_main drillstatic pthread)
 
 add_executable(lru_cache_test lru_cache_test.cc)
 target_link_libraries(lru_cache_test gtest gtest_main drillstatic pthread)
+
+
+add_executable(singleton_test singleton_test.cc)
+target_link_libraries(singleton_test gtest gtest_main drillstatic pthread)

@@ -48,6 +48,7 @@ set(
 	common/filesystem.h
 	common/matrix.h
 	common/lru_cache.h
+	common/singleton.h
 	)
 
 	
