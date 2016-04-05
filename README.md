@@ -1,18 +1,16 @@
 # drill
-walle boost
 
-/drill
-   /config
-   /mem
-        /allocator
-   /common
-   /event
-   /dio
-   /net
-     /http
-     /rpc
-   /app
+## code struct
 
-/meta
-/chunk
+* common
+
+## build and install
+        >cd $project_root_dir
+        >mkdir build
+        >cd build
+        >cmake ../
+        >make
+        >make install
+        >make package(if you want build rpm package)
+
    
