@@ -21,18 +21,27 @@ add_subdirectory(drill)
 
 #########################################
 # build test
-if(test)
+###########################################################
 #	add_subdirectory(lib/gtest-1.6.0)
-#	enable_testing()
-# Include the gtest library. gtest_SOURCE_DIR is available due to
-# 'project(gtest)' above.  
+#   it will cause cmake infinit loop by reset cache variables,
+#   so we need manully make gtest before build this project
+#   like this:
+#   >cd lib/gtest-1.6.0
+#   >cmake .
+#   >make
+##############################################################
+
+
+if(test)
 
 	include_directories(${PROJECT_SOURCE_DIR}/lib/gtest-1.6.0/include)
 	link_directories(${PROJECT_SOURCE_DIR}/lib/gtest-1.6.0/)
 	 ##############  
 	 # Unit Tests  
 	 ##############
+	 #	enable_testing()
 	 add_subdirectory(test/common)
+	 
 endif()
 
 #########################################

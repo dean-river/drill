@@ -46,7 +46,8 @@ set(
 	common/encode.h
 	common/histogram.h
 	common/filesystem.h
-	
+	common/matrix.h
+	common/lru_cache.h
 	)
 
 	
