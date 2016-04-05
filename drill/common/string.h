@@ -9,6 +9,9 @@
 #include <vector>
 #include <limits>
 
+#pragma GCC diagnostic ignored "-Wtype-limits"
+
+
 namespace drill {
 
 namespace common {

@@ -3,7 +3,7 @@
 
 #include <drill/common/cond.h>
 #include <drill/common/mutex.h>
-#include <drill/common/Thread.h>
+#include <drill/common/thread.h>
 
 #include <functional>
 #include <drill/common/noncopyable.h>
