@@ -1,6 +1,7 @@
 #ifndef DRILL_COMMON_ATOMIC_H_
 #define DRILL_COMMON_ATOMIC_H_
 #include <cstdint>
+#include <cstddef>
 
 namespace drill{
 namespace common{
@@ -30,8 +31,14 @@ public:
 	  	return __sync_fetch_and_add(&_value, x);
 	}
 
+	T getAndSub(T x)
+	{
+		return getAndAdd(-x);
+	}
 	T addAndGet(T x)  {    return getAndAdd(x) + x;  }
 
+	T subAndGet(T x) { return getAndAdd(-x) - x; } 
+	
 	T incrementAndGet()  {    return addAndGet(1);  }
 	T decrementAndGet()  {    return addAndGet(-1);  }
 	void add(T x)  {    getAndAdd(x);  }
@@ -51,6 +58,8 @@ private:
 };
 typedef AtomicIntegerT<int32_t> AtomicInt32;
 typedef AtomicIntegerT<int64_t> AtomicInt64;
+typedef AtomicIntegerT<size_t>  AtomicSizeT;
+
 
 }
 }

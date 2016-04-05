@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(drill)
+project(drill CXX C)
 
 set (PROJECT_VERSION_MAJOR 1) 
 set (PROJECT_VERSION_MINOR 0)

@@ -31,14 +31,14 @@ try_run(PLATE_GET PLATE_GET_BUILD
 message(STATUS "system plate form is: ${SYSTEM_PLATE}")
 
 set(TRY_COMPILE_CODE "if(__builtin_expect(1<2, 1)) {}")
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/cmake/buildin.c ${PROJECT_BINARY_DIR}/check-builtin-expect.c)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/cmake/buildin.cc ${PROJECT_BINARY_DIR}/check-builtin-expect.cc)
 TRY_COMPILE(HAVE_BUILTIN_EXPECT ${PROJECT_BINARY_DIR} 
-            ${PROJECT_BINARY_DIR}/check-builtin-expect.c) 
+            ${PROJECT_BINARY_DIR}/check-builtin-expect.cc) 
 
 set(TRY_COMPILE_CODE "int leading_zeros = __builtin_ctzll(4)")
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/cmake/buildin.c ${PROJECT_BINARY_DIR}/check-builtin-ctz.c)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/cmake/buildin.cc ${PROJECT_BINARY_DIR}/check-builtin-ctz.cc)
 TRY_COMPILE(HAVE_BUILTIN_CTZ ${PROJECT_BINARY_DIR} 
-            ${PROJECT_BINARY_DIR}/check-builtin-ctz.c)
+            ${PROJECT_BINARY_DIR}/check-builtin-ctz.cc)
             
 configure_file (
   "${PROJECT_SOURCE_DIR}/drill/config/config.h.in"
