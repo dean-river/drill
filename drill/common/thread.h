@@ -1,5 +1,5 @@
-#ifndef WALLE_THREAD_THREAD_H_
-#define WALLE_THREAD_THREAD_H_
+#ifndef DRILL_COMMON_THREAD_H_
+#define DRILL_COMMON_THREAD_H_
 
 #include <drill/common/atomic.h>
 #include <drill/common/noncopyable.h>

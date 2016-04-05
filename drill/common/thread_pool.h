@@ -1,5 +1,5 @@
-#ifndef WALLE_THREAD_THREADPOOL_H_
-#define WALLE_THREAD_THREADPOOL_H_
+#ifndef DRILL_COMMON_THREADPOOL_H_
+#define DRILL_COMMON_THREADPOOL_H_
 
 #include <drill/common/cond.h>
 #include <drill/common/mutex.h>

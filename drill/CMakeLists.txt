@@ -11,6 +11,9 @@ set(
 	common/thread_pool.cc
 	common/cond.cc
 	common/mutex.cc
+	common/buffer.cc
+	common/histogram.cc
+	common/filesystem.cc
 	)
 
 set(
@@ -37,7 +40,12 @@ set(
 	common/cond.h
 	common/mutex.h
 	common/scoped_lock.h
-	
+	common/buffer.h
+	common/types.h
+	common/weak_call.h
+	common/encode.h
+	common/histogram.h
+	common/filesystem.h
 	
 	)
 

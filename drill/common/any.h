@@ -123,8 +123,8 @@ namespace common  {
     public:
         virtual const char * what() const throw()
         {
-            return "walle::bad_any_cast: "
-                   "failed conversion using walle::any_cast";
+            return "bad_any_cast: "
+                   "failed conversion using any_cast";
         }
     };
 
