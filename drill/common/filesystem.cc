@@ -1,6 +1,6 @@
 #include <drill/common/filesystem.h>
 #include <dirent.h>
-
+#include <unistd.h>
 using std::string;
 using std::vector;
 

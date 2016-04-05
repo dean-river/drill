@@ -8,7 +8,8 @@ public:
 	stest():i(0) {}
 	int i;
 	
-}
+};
+
 TEST(singleton1, 1) {
 
 	stest *instance1 = stest::GetInstance();
