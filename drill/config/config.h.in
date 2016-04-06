@@ -21,7 +21,7 @@
 
 #cmakedefine ENABLE_C11
 
-#cmakedefine DEBUG
+#cmakedefine DRILL_DEBUG
 
 
 #endif
