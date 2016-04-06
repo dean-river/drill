@@ -1,5 +1,5 @@
-#ifndef WALLE_SERVICE_H_
-#define WALLE_SERVICE_H_
+#ifndef DRILL_SERVICE_SERVICE_H_
+#define DRILL_SERVICE_SERVICE_H_
 
 #include <drill/event/event_loop.h>
 #include <drill/event/channel.h>

@@ -1,5 +1,5 @@
-#ifndef WALLE_LOGFILE_H_
-#define WALLE_LOGFILE_H_
+#ifndef DRILL_SERVICE_LOGFILE_H_
+#define DRILL_SERVICE_LOGFILE_H_
 #include <drill/common/sequence_write_file.h>
 #include <drill/common/time.h>
 #include <drill/common/mutex.h>
