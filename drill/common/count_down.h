@@ -2,7 +2,7 @@
 #define DRILL_COMMON_COUNTDOWN_H_
 
 #include <drill/common/mutex.h>
-#include <drill/sys/cond.h>
+#include <drill/common/cond.h>
 
 namespace drill {
 

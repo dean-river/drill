@@ -1,4 +1,5 @@
 #include <drill/common/sequence_write_file.h>
+#include <cassert>
 
 namespace drill {
 namespace common {

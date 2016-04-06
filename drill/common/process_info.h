@@ -18,7 +18,7 @@ namespace ProcessInfo{
   uid_t uid();
   string username();
   uid_t euid();
-  walle::sys::Time startTime();
+  drill::common::Time startTime();
 
   string hostname();
   string procname();

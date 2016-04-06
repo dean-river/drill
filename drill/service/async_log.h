@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <vector>
+#include <string>
 
 using namespace drill::common;
 
@@ -21,7 +22,7 @@ class AsyncLogging :noncopyable
 {
  public:
 
-  AsyncLogging(const string& basename,
+  AsyncLogging(const std::string& basename,
                size_t rollSize,
                int flushInterval = 3);
 
@@ -61,11 +62,11 @@ class AsyncLogging :noncopyable
   void operator=(const AsyncLogging&);  // ptr_container
 
   typedef FixedBuffer<klargebuffer> Buffer;
-  typedef vector<Buffer*> BufferVector;
+  typedef std::vector<Buffer*> BufferVector;
  
   const int     _flushInterval;
   bool          _isrunning;
-  string        _basename;
+  std::string        _basename;
   size_t        _rollSize;
   CountDown     _latch;
   Mutex         _mutex;

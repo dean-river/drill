@@ -15,9 +15,6 @@ include_directories(${PROJECT_BINARY_DIR}) #for config.h
 
 add_subdirectory(drill)
 
-#add_subdirectory(walle/unit)
-#add_subdirectory(walle/sys)
-#add_subdirectory(walle/net)
 
 #########################################
 # build test

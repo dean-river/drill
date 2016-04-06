@@ -1,12 +1,17 @@
 #include <drill/service/service.h>
+#include <drill/service/async_log.h>
+#include <drill/common/filesystem.h>
+#include <drill/common/read_small_file.h>
+#include <drill/common/process_info.h>
+#include <drill/common/sequence_write_file.h>
 #include <iostream>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <time.h>
 
 
@@ -101,7 +106,7 @@ int Service::main(int argc, char* argv[])
 	}
 
 	 _confFile =  _args.get<string>("config");
-	 if(!_conf.loadProperties(_confFile, '=', false)) {
+	 if(!_conf.loadProperties(_confFile.c_str(), '=', false)) {
 		cout<<"Config file load error to check config file"<<endl;
 		exit(1);
 	 }
@@ -114,7 +119,7 @@ int Service::main(int argc, char* argv[])
 		start();	
 		
 	} else if(cmd == "stop") {
-		_pidFile = _conf.getValue("pidfile");
+		_pidFile = _conf.getValue("pidfile", "");
 		if(_pidFile.empty()) {
 			cout<<"must have pidfile to stop"<<endl;
 		}
@@ -129,7 +134,7 @@ int Service::main(int argc, char* argv[])
 			 cout<<"[ERROR]: Not found pidfile["<<_pidFile<<"]..."<<endl;
 		}
 		
-		int64_t opid = from_str(pidcontent);
+		int64_t opid = string_to_int(pidcontent);
 		if(opid > 0) {
 			if(kill(opid,SIGINT) != 0) {
 				 cout<<"[ERROR]: kill pid["<<opid<<"] failed..."<<endl;
@@ -170,11 +175,11 @@ void Service::runDaemon()
 	assert( fd == 1 );
 	fd = dup2(1,2);
 	assert( fd == 2 ); 
-	UNUSED(fd);
-	_workdir = _conf.getValue("service_work_dir");
+	(void)fd;
+	_workdir = _conf.getValue("service_work_dir", "");
 	if(!_workdir.empty()) {
 		int ret = chdir(_workdir.c_str());
-		UNUSED(ret);
+		(void)ret;
 		
 	}
 	umask(0);
@@ -184,12 +189,12 @@ void Service::runDaemon()
 void Service::start() 
 {
 
-	string tmp = _conf.getValue("daemon_mode");
+	string tmp = _conf.getValue("daemon_mode", "false");
 	if(tmp == "true" || tmp == "TRUE") {
 		_isdaemon = true;
 	}
 
-	_pidFile =  _conf.getValue("pidfile");
+	_pidFile =  _conf.getValue("pidfile", "");
 	
 	if(_isdaemon && _pidFile.empty()) {
 		
@@ -254,10 +259,10 @@ void Service::start()
 }
 bool Service::initLogConf()
 {
-	string logdir = _conf.getValue("service_log_dir");
-	string logprefix = _conf.getValue("log_name_prefix");
+	string logdir = _conf.getValue("service_log_dir", "");
+	string logprefix = _conf.getValue("log_name_prefix", "");
 	 _interval = _conf.getValue("log_flush_interval",3);
-	 _rollsize = _conf.getValue("log_roll_size");	
+	 _rollsize = _conf.getValue("log_roll_size", 1024*1024);	
 	string level = _conf.getValue("log_level","info");
 	if(logdir.empty()||logprefix.empty()) {
 		return false;
@@ -321,6 +326,7 @@ void Service::onReadSignal(Time t)
 
 bool Service::userSignalOpt(int sig)
 {
+	(void)sig;
 	return false;
 }
 void Service::defaultSignalOpt(int sig)

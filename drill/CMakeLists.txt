@@ -8,6 +8,9 @@ FILE(GLOB EVENT_HEADER "event/*.h")
 FILE(GLOB NET_SRC "net/*.cc")
 FILE(GLOB NET_HEADER "net/*.h")
 
+FILE(GLOB NET_SRC "service/*.cc")
+FILE(GLOB NET_HEADER "service/*.h")
+
 add_library(drillstatic STATIC ${COMMON_SRC} ${EVENT_SRC} ${NET_SRC})
 set_target_properties(drillstatic PROPERTIES OUTPUT_NAME drill)
 

@@ -3,7 +3,7 @@
 #include <drill/common/sequence_write_file.h>
 #include <drill/common/time.h>
 #include <drill/common/mutex.h>
-#include <drill/common/scoped_ptr.h>
+
 
 #include <string>
 #include <cstddef>

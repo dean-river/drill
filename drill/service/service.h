@@ -1,8 +1,11 @@
 #ifndef WALLE_SERVICE_H_
 #define WALLE_SERVICE_H_
 
-#include <walle/event/event_loop.h>
-#include <walle/event/channel.h>
+#include <drill/event/event_loop.h>
+#include <drill/event/channel.h>
+#include <drill/common/logger.h>
+#include <drill/common/properties.h>
+#include <drill/common/cmdline.h>
 
 #include <signal.h>
 #include <sys/signalfd.h>
@@ -61,7 +64,7 @@ class Service{
         string                     _confFile;
         string                     _pidFile;
 
-        std::unqiue<Channel>        _sigChannel;
+        std::unique_ptr<Channel>        _sigChannel;
         EventLoop                  *_loop;
         
         sigset_t                    _sigmask;
