@@ -14,6 +14,11 @@ FILE(GLOB NET_HEADER "service/*.h")
 add_library(drillstatic STATIC ${COMMON_SRC} ${EVENT_SRC} ${NET_SRC})
 set_target_properties(drillstatic PROPERTIES OUTPUT_NAME drill)
 
+if(enable_dynamic)
+	add_library(drillshared SHARED ${COMMON_SRC} ${EVENT_SRC} ${NET_SRC})
+	set_target_properties(drillshared PROPERTIES OUTPUT_NAME drill)
+endif()
+
 install(TARGETS drillstatic DESTINATION lib)
 install (FILES ${COMMON_HEADER} DESTINATION include/drill/common)
 install (FILES ${EVENT_HEADER} DESTINATION include/drill/event)

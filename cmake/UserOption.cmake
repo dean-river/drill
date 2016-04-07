@@ -4,7 +4,11 @@
 
 
 option (USE_C11 "if use -std=c++11 flag" ON)
-option (DEBUG "if using debug mode" ON)
+option (DRILL_DEBUG "if using debug mode" ON)
+###################################
+#enable dynamic lib
+###################################
+option (enable_dynamic "if using debug mode" ON)
 
 ##########################################
 #install path
@@ -33,7 +37,7 @@ option(test "enable test on" ON)
 
 set(CMAKE_CONFIGURATION_TYPES Debug Release RelWithDebInfo)
 
-if(WALLE_DEBUG) 
+if(DRILL_DEBUG) 
 	set(CMAKE_BUILD_TYPE Debug)
 else () 
 	set(CMAKE_BUILD_TYPE Release) 
