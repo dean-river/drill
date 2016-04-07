@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <unordered_map>
 
 using namespace drill::common;
 
@@ -167,35 +168,23 @@ namespace http {
       return parseMethod(Slice(str));  
   }
 
-  enum http_req_parse_status {
+  enum http_parse_status {
+  	e_error,
+	e_stateline,
     e_request,
     e_header,
     e_body,
     g_all
   };
 
- enum http_req_packet_status {
-    e_request,
-    e_header,
-    e_body,
-    g_all
-  };
 
- enum http_res_parse_status {
-    e_stateline,
-    e_header,
-    e_body,
-    g_all
+  enum http_body_encode {
+	kNo,
+	kPlain,
+	kChunk
   };
-
-  enum http_res_packet_status {
-    e_stateline,
-    e_header,
-    e_body,
-    g_all
-  };
-
-  
+    typedef std::unordered_map<std::string, std::string >  Dict;
+    typedef Dict::iterator DictItr;
  inline std::string get_string(http_status_code c) 
  {
           switch (c) {

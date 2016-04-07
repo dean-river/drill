@@ -12,11 +12,39 @@ struct  Uri {
   Uri():secure(false), valid(false) {}
   Uri(const Slice &line):secure(false), valid(false)
   {
-    Slice uri(line);
+    set(line);
+  }
+
+  Uri(bool s, std::string const & h, 
+    const std::string &p,
+    std::string const & l)
+    :secure(s),
+    valid(true),
+    scheme(s?"https":"http"),
+    host(h),
+    port(p),
+    location(l)
+  {
+
+  }
+
+    Uri(bool s, std::string const & h, 
+    std::string const & l)
+    :secure(s),
+     valid(true),
+     scheme(s?"https":"http"),
+     host(h),
+     port(s?"443":"80"),
+     location(l)
+  {
+
+  }
+ void set(const Slice &line) 
+ {
+	Slice uri(line);
     if(line.size() == 0) {
       return;
     }
-    size_t uri_len = line.size(); 
 
     if(uri.starts_with("http://")) {
       scheme =  "http";
@@ -65,36 +93,38 @@ struct  Uri {
     //location
     location += "/";
     location.append(uri.data(), uri.size());
+	if(!host.empty() && port.empty()) {
+		if(secure) {
+			port = "443";
+		} else {
+			port = "80";
+		}
+		
+	}
     valid = true;
-    
-  }
-
-  Uri(bool s, std::string const & h, 
-    const std::string &p,
-    std::string const & l)
-    :secure(s),
-    valid(true),
-    scheme(s?"https":"http"),
-    host(h),
-    port(p),
-    location(l)
+ }
+  bool checkValid()
   {
-
+		return true;
   }
-
-    Uri(bool s, std::string const & h, 
-    std::string const & l)
-    :secure(s),
-    valid(true),
-    scheme(s?"https":"http"),
-    host(h),
-    port(s?"443","80"),
-    location(l)
+	
+  std::string toString()
   {
-
+	std::string result;
+	if(!scheme.empty()) {
+		result += scheme;
+		result += "://";
+	}
+	if(!host.empty()) {
+		result += host;
+		if(port != "80" && port != "443") {
+			result += ":";
+			result += port;
+		}
+	}
+	result += location;
+	return result;
   }
-
-    
   bool        secure;
   bool        valid;
   std::string scheme;
@@ -103,6 +133,8 @@ struct  Uri {
   std::string location;
 
 };
+
+
 }
 }
 #endif
