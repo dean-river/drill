@@ -4,6 +4,7 @@
 #include <drill/http/uri.h>
 #include <string>
 #include <cstdint>
+#include <memory>
 
 using std::string;
 
@@ -30,15 +31,16 @@ public:
 	http_body_encode       encoding;
 	size_t      need_do_size;
 	size_t      had_do_size;
-    string  method;
-    string  version;
-    Uri     uri;
-    Dict    args;
-    Dict    header;
+  string  method;
+  string  version;
+  Uri     uri;
+  Dict    args;
+  Dict    header;
 	std::string body;
 	
 private:
-      size_t    parseRequestLine(const char* buff, size_t len);
+
+    size_t    parseRequestLine(const char* buff, size_t len);
 	  size_t    parseHeaders(const char* buff, size_t len);
 	  void      preParseBody();
 	  bool      parseArgs(const char* buff, size_t len);
@@ -46,7 +48,7 @@ private:
 
 };
 
-
+typedef std::shared_ptr<HttpRequest> HttpRequestPtr;
 }
 }
 

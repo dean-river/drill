@@ -169,14 +169,26 @@ namespace http {
   }
 
   enum http_parse_status {
-  	e_error,
-	e_stateline,
-    e_request,
-    e_header,
-    e_body,
-    g_all
+  	kParseError,
+	  kPStateline,
+    kPRequestLine,
+    kPHeader,
+    kPBody,
+    kPGotAll
   };
 
+ enum http_process_status {
+    kProcessError,
+    kProcessHost,
+    kProcessMethod,
+    kProcessLocation,
+    kProcessVersion,
+    kProcessHeader,
+    kProcessBodyPre,
+    kProcessBody,
+    kProcessResponse,
+    kProcessLog
+ };
 
   enum http_body_encode {
 	kNo,

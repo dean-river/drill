@@ -6,6 +6,8 @@
 #include <vector>
 #include <stdint.h>
 #include <stddef.h>
+#include <memory>
+
 using namespace std;
 
 namespace drill {
@@ -41,6 +43,7 @@ class HttpResponse {
 	  void      preParseBody();
 };
 
+typedef std::shared_ptr<HttpResponse> HttpResponsePtr;
 }
 
 }

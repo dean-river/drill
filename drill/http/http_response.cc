@@ -7,7 +7,7 @@ namespace drill {
 namespace http {
 
   HttpResponse::HttpResponse():
-  					parseStat(e_stateline),
+  					parseStat(kPStateline),
    					need_do_size(0),
    					had_do_size(0),
    					httpcode(0)
@@ -20,42 +20,42 @@ namespace http {
   }
   void HttpResponse::recvStatLine()
   {
-	parseStat = e_header;
+	parseStat = kPHeader;
   }
   void HttpResponse::recvHeader()
   {
-	parseStat = e_body;
+	parseStat = kPBody;
   }
 
   void HttpResponse::recvBody()
   {
-	parseStat = g_all;
+	parseStat = kPGotAll;
   }
   bool HttpResponse::isvalid()
   {
-	return parseStat != e_error;
+	return parseStat != kParseError;
   }
 
   bool HttpResponse::getAll()
   {
-	return parseStat == g_all;
+	return parseStat == kPGotAll;
   }
   size_t HttpResponse::parseResponse(const char* buff, size_t len)
   {
   		size_t parseSize = 0;
 		size_t segsize; 
-		if( parseStat == e_stateline) {
+		if( parseStat == kPStateline) {
 			segsize = parseStatLine(buff, len);
 			parseSize +=  segsize;
 
 		}		
 
-		if(parseStat == e_header) {
+		if(parseStat == kPHeader) {
 			segsize = parseHeaders(buff + parseSize , len - parseSize);
 			parseSize +=  segsize;
 		}
 
-		if(parseStat == e_body) {
+		if(parseStat == kPBody) {
 			segsize = parseBody(buff + parseSize,len - parseSize);
 			parseSize +=  segsize;
 		}
