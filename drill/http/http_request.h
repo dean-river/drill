@@ -2,15 +2,18 @@
 #define DRILL_HTTP_HTTPREQUEST_H_
 
 #include <drill/common/buffer.h>
+#include <drill/common/time.h>
+
 #include <drill/http/http_constants.h>
 
 #include <map>
 #include <cassert>
 #include <cstdio>
 #include <ctype.h>
-
+#include <string>
 #include <cstring>
 using namespace drill::common;
+using namespace std;
 
 namespace drill {
 namespace http {
@@ -52,7 +55,7 @@ class HttpRequest
     _path.assign(start, end);
   }
 
-  const string& path() const
+  const std::string& path() const
   { return _path; }
 
   void setQuery(const char* start, const char* end)
@@ -94,7 +97,7 @@ class HttpRequest
          leave_size = strlen(pquery);
    }
   }
-  const string& query() const
+  const std::string& query() const
   { return _query; }
 
   void setReceiveTime(Time t)
