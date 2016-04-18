@@ -254,6 +254,73 @@ bool moveDir( const string &srcdir, const string &destdir ) {
 	return false;
 }
 
+bool readFileToString(const std::string & path, std::string *content)
+{
+	//fixme:std::forward
+	if(!fileExist(path)) {
+		return false;
+	}
+	
+	size_t filesize = fileSize(path);
+
+	content->clear();
+	if(filesize == 0 ) {
+		
+		return true;
+	}
+
+	content->reserve(filesize);
+
+	int fd = ::open(path.c_str(),O_RDONLY|O_CLOEXEC);
+
+	if(fd == -1) {
+		::close(fd);
+		return false;
+	}
+
+	ssize_t n = ::read(fd,&(*content)[0],filesize);
+	::close(fd);
+	if(n <= 0 || static_cast<size_t>(n) != filesize) {	
+		return false;
+	}
+
+	content->resize(n);
+	return true;
+	
+}
+
+bool writeStringToFile(const std::string &path, const char *content, size_t len)
+{
+	if(!content) {
+		return false;
+	}
+
+
+
+	int fd = ::open(path.c_str(),O_WRONLY|O_CLOEXEC|O_CREAT|O_TRUNC, 0644);
+
+	if(fd == -1) {
+		::close(fd);
+		return false;
+	}
+
+			//just create a file
+	if(len == 0) {
+		::close(fd);
+		return true;
+	}
+
+	ssize_t n = ::write(fd,content,len);
+	::close(fd);
+	if(n <= 0 || static_cast<size_t>(n) != len) {	
+		return false;
+	}
+	
+	return true;
+
+
+}
+
 }
 } // namespace
 

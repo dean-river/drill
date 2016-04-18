@@ -8,6 +8,9 @@
 #include <drill/common/noncopyable.h>
 #include <drill/http/http_response.h>
 #include <drill/http/http_request.h>
+#include <drill/http/http_constants.h>
+#include <drill/http/http_context.h>
+
 #include <functional>
 
 

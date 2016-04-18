@@ -56,6 +56,10 @@ bool deleteDir( const string &dir );
 
 
 bool moveDir( const string &srcdir, const string &destdir );
+
+bool readFileToString(const std::string &path, std::string *content);
+bool writeStringToFile(const std::string &path, const char *content, size_t len);
+
 		  
 }
 }

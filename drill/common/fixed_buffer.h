@@ -7,7 +7,7 @@
 
 namespace drill {
 namespace common {
-    static const size_t ktinybuffer = 1024;
+    static const size_t ktinybuffer = 256;
     static const size_t kminibuffer = 1024;
     static const size_t ksmallbuffer = 4096;
     static const size_t kmediumbuffer = 1024 * 128;

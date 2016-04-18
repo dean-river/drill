@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 	Logger::setLogLevel(Logger::WARN);
   }
   EventLoop loop;
-  AddrInet Addr("0.0.0.0:19000");
+  AddrInet Addr("0.0.0.0:8080");
   HttpServer server(&loop, Addr, "walle");
   server.setHttpCallback(onRequest);
   server.setThreadNum(numThreads);

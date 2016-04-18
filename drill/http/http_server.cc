@@ -1,4 +1,3 @@
-
 #include <drill/http/http_server.h>
 #include <drill/http/http_context.h>
 #include <drill/http/http_request.h>

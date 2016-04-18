@@ -129,8 +129,6 @@ std::string& replace_all(std::string& str, const std::string& needle,
 
 std::string& trim(std::string& str, const std::string& drop = " \r\n\t");
 
-
-
 /*
 * chinese charactor caution, do not deal it
 */

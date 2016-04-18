@@ -36,7 +36,7 @@ class HttpContext
   { _state = kPBody; }
   void receiveBody()
   {
-	_state =kPGotAll;
+	  _state =kPGotAll;
   }
 
   void reset()
@@ -54,7 +54,7 @@ class HttpContext
 
  private:
   httpParseStatus _state;
-  HttpRequest _request;
+  HttpRequest     _request;
 };
 
 }

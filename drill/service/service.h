@@ -45,7 +45,7 @@ class Service{
 		Logger::LogLevel      _loglevel;
 
         
-    protected:
+   protected:
 		virtual int run() = 0;
 		virtual void dispose() = 0; 
 		virtual bool userSignalOpt(int sig);
