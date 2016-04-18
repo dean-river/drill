@@ -1,153 +1,38 @@
 #include <drill/http/http_response.h>
-#include <algorithm>
-#include <drill/common/string.h>
+#include <cstdio>
 
-namespace drill {
+using namespace drill::http;
 
-namespace http {
-
-  HttpResponse::HttpResponse():
-  					parseStat(kPStateline),
-   					need_do_size(0),
-   					had_do_size(0),
-   					httpcode(0)
-  					
-  {
-  }
-  HttpResponse::~HttpResponse()
-  {
-
-  }
-  void HttpResponse::recvStatLine()
-  {
-	parseStat = kPHeader;
-  }
-  void HttpResponse::recvHeader()
-  {
-	parseStat = kPBody;
-  }
-
-  void HttpResponse::recvBody()
-  {
-	parseStat = kPGotAll;
-  }
-  bool HttpResponse::isvalid()
-  {
-	return parseStat != kParseError;
-  }
-
-  bool HttpResponse::getAll()
-  {
-	return parseStat == kPGotAll;
-  }
-  size_t HttpResponse::parseResponse(const char* buff, size_t len)
-  {
-  		size_t parseSize = 0;
-		size_t segsize; 
-		if( parseStat == kPStateline) {
-			segsize = parseStatLine(buff, len);
-			parseSize +=  segsize;
-
-		}		
-
-		if(parseStat == kPHeader) {
-			segsize = parseHeaders(buff + parseSize , len - parseSize);
-			parseSize +=  segsize;
-		}
-
-		if(parseStat == kPBody) {
-			segsize = parseBody(buff + parseSize,len - parseSize);
-			parseSize +=  segsize;
-		}
-		return parseSize;
-  }
-
-
-  size_t	HttpResponse::parseStatLine(const char* buff, size_t len)
-  {
-		assert(buff);
-		size_t parsed = 0;
-		const char *c = "\r\n";
-		const char * end = buff+len;
-		const char *crlf = std::search(buff, end, c, c+2);
-		if(crlf == end ) {
-			return 0;
-		}
-		//version
-		parsed = crlf - buff;
-		const char *space = std::find(buff, crlf, ' ');
-		
-		version =string(buff,space);
-		
-		while(*space == ' ') space++;
-		const char *statmsg = std::find(space, crlf, ' ');
-		httpcode = drill::common::string_to_int(space,(size_t)(statmsg - space));
-		
-		while(*statmsg == ' ') statmsg++;
-		
-		httpStatline = string(statmsg, crlf);
-		recvStatLine();
-		return parsed+2;
-		
-  }
-  size_t	HttpResponse::parseHeaders(const char* buff, size_t len)
-  {
-		const char *end = buff+len;
-		const char *c = "\r\n";
-		const char *crlf = std::search(buff, end, c, c+2);
-		const char *start = buff;
-		size_t parsed = 0;
-		while (crlf != end) {
-			const char* colon = std::find(start, crlf, ':');
-			if(colon == crlf) {
-				recvHeader();
-				preParseBody();
-				parsed += 2;
-				return parsed;
-			}
-			string key(start,colon);
-			colon++;
-			while(*colon == ' ') colon++;
-			string value(colon,crlf);
-			while(value[value.size()-1] == ' ') {
-				size_t valuesize = value.size();
-				value.resize(valuesize -1);
-			}
-			header[key] = value;
-			parsed += crlf - start + 2;
-			start = crlf + 2;
-			
-			crlf = std::search(start, end, c, c+2);
-			
-		}
-		return parsed;
-  }
-void HttpResponse::preParseBody()
+void HttpResponse::appendToBuffer(Buffer* output) const
 {
-	const char* contentLen = "Content-Length";
-	DictItr itr= header.find(contentLen);
-	if(itr == header.end()) {
-		//no content
-		need_do_size = 0;
-		recvBody();
-		return;
-	}
-	need_do_size = drill::common::string_to_int(itr->second.c_str(),itr->second.length());
+  char buf[32];
+  snprintf(buf, sizeof buf, "HTTP/1.1 %d ", _statusCode);
+  output->append(buf);
+  output->append(_statusMessage);
+  output->append("\r\n");
+
+  if (_closeConnection)
+  {
+    output->append("Connection: close\r\n");
+  }
+  else
+  {
+    snprintf(buf, sizeof buf, "Content-Length: %zd\r\n", _body.size());
+    output->append(buf);
+    output->append("Connection: Keep-Alive\r\n");
+  }
+
+  for (std::map<string, string>::const_iterator it = _headers.begin();
+       it != _headers.end();
+       ++it)
+  {
+    output->append(it->first);
+    output->append(": ");
+    output->append(it->second);
+    output->append("\r\n");
+  }
+
+  output->append("\r\n");
+  output->append(_body);
 }
-size_t	HttpResponse::parseBody(const char* buff, size_t len)
-{
-	size_t parsed;
-	if(len <= need_do_size- had_do_size) {
-		parsed = len;
-	} else {
-		parsed = need_do_size- had_do_size;
-	}
-	had_do_size += parsed;
-	body.append(buff,parsed);
-	if(need_do_size == had_do_size) {
-		recvBody();
-	}
-	return parsed;
-}
-}
-}
+

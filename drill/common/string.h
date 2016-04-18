@@ -1,5 +1,5 @@
 #ifndef DRILL_COMMON_STRING_H_
-#define DRILL_COMMON_STINEG_H_
+#define DRILL_COMMON_STRING_H_
 
 #include <string>
 #include <cstddef>
@@ -21,7 +21,7 @@ std::string hex_encode(const void *data, size_t size);
 std::string hex_decode(const void *data, size_t size);
 
 template <typename T>
-std::string hex_encode(const T & obj)
+static inline std::string hex_encode(const T & obj)
 {
 	return hex_encode(&obj, sizeof(obj));
 }

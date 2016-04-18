@@ -1,50 +1,70 @@
-#ifndef DRILL_HTTP_RESPONSE_H_
-#define DRILL_HTTP_RESPONSE_H_
-#include <drill/http/constants.h>
+#ifndef WALLE_HTTPREPONSE_H_
+#define WALLE_HTTPREPONSE_H_
+#include <drill/http/http_constants.h>
+#include <drill/common/buffer.h>
+#include <drill/common/string.h>
+
+
 #include <string>
 #include <map>
-#include <vector>
-#include <stdint.h>
-#include <stddef.h>
-#include <memory>
 
+
+using namespace drill::common;
 using namespace std;
-
-namespace drill {
+namespace drill  {
 namespace http {
+	
+class HttpResponse 
+{
+ public:
+  explicit HttpResponse(bool close)
+    : _statusCode(uninitialized),
+      _closeConnection(close)
+  {
+  }
 
-class HttpResponse {
-    public:
-      HttpResponse();
-      ~HttpResponse();
-      void recvStatLine();
-      void recvHeader();
-      void recvBody();
+  void setStatusCode(HttpStatusCode code)
+  { _statusCode = code; }
 
-      bool getAll();
-      bool isvalid();
-      void setValid(bool valid);
-      size_t parseResponse(const char* buff, size_t len);
+  void setStatusMessage(const string& message)
+  { _statusMessage = message; }
 
-      
-		http_parse_status parseStat;
-		size_t  need_do_size;
-		size_t  had_do_size;		
-        int     httpcode;
-        string  version;
-        string  httpStatline;
-        Dict    header;
-        string  body;
+  void setCloseConnection(bool on)
+  { _closeConnection = on; }
 
-    private:
-      size_t    parseStatLine(const char* buff, size_t len);
-      size_t    parseHeaders(const char* buff, size_t len);
-      size_t    parseBody(const char* buff, size_t len);
-	  void      preParseBody();
+  bool closeConnection() const
+  { return _closeConnection; }
+
+  void setContentType(const string& contentType)
+  { addHeader("Content-Type", contentType); }
+
+  void setContentLeng(int64_t n) 
+  {
+    string len = to_str(n);
+    addHeader("Content-Length",len);
+    
+  }
+
+  // FIXME: replace string with Slice
+  void addHeader(const string& key, const string& value)
+  { _headers[key] = value; }
+
+  void setBody(const string& body)
+  {
+    _body = body;
+    setContentLeng(_body.size());
+  }
+
+  void appendToBuffer(Buffer* output) const;
+
+ private:
+  std::map<string, string> _headers;
+  HttpStatusCode           _statusCode;
+  string                   _statusMessage;
+  bool                     _closeConnection;
+  string                   _body;
 };
 
-typedef std::shared_ptr<HttpResponse> HttpResponsePtr;
 }
-
 }
 #endif

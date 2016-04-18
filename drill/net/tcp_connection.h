@@ -134,7 +134,7 @@ highWaterMark)
   CloseCallback              _closeCallback;
   Buffer                     _inputBuffer;
   Buffer                     _outputBuffer;
-  any                       _context;
+  any                        _context;
   AddrInet                   _localAddr;
   AddrInet                   _peerAddr;
   size_t                     _highWaterMark;
