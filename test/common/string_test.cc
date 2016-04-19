@@ -59,14 +59,27 @@ TEST(end_with, 2) {
 
 TEST(parse_size, 1) {
 	uint64_t ret;
-	std::string n("10KB");
+	std::string n("10 KB");
 	parse_size(n.data(), ret);
 	EXPECT_EQ(ret, (uint64_t)10000);
 }
 
+TEST(parse_size, 3) {
+	uint64_t ret;
+	std::string n("10KB");
+	parse_size(n.data(), ret);
+	EXPECT_EQ(ret, (uint64_t)10000);
+}
 TEST(parse_size, 2) {
 	uint64_t ret;
 	std::string n("10KIB");
+	parse_size(n.data(), ret);
+	EXPECT_EQ(ret, (uint64_t)10240);
+}
+
+TEST(parse_size, 4) {
+	uint64_t ret;
+	std::string n("10 KIB");
 	parse_size(n.data(), ret);
 	EXPECT_EQ(ret, (uint64_t)10240);
 }
