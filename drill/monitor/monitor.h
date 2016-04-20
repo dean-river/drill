@@ -1,63 +1,51 @@
 #ifndef DRILL_MONITOR_MONITOR_H_
 #define DRILL_MONITOR_MONITOR_H_
-
-#include <drill/monitor/monitor_info.h>
+#include <drill/http/http_server.h>
 #include <drill/event/event_loop.h>
+#include <drill/net/addr_inet.h>
+#include <drill/common/mutex.h>
+#include <drill/monitor/sigar.h>
 #include <memory>
+#include <map>
+#include <string>
+#include <functional>
+
+using namespace drill::http;
+using namespace drill::net;
+using namespace drill::common;
 
 namespace drill {
 
 namespace monitor {
 
+sigar_t                      *g_ar;
+
 class Monitor {
 public:
-	Monitor(drill::event::EventLoop *loop);
+  typedef std::vector<string> ArgList;
+  typedef std::function<string (HttpMethod, const ArgList& args)> Callback;
+	Monitor(drill::event::EventLoop *loop, 
+     AddrInet &httpaddr, std::string & name);
 
-	bool init();
+  void add(const string& module,           const string& command,           
+              const Callback& cb,           const string& help);
+            
+  void remove(const string& module, const string& command);
 
-	std::shared_ptr<CpuInfo> getCupInfo() { return _cpuInfo; } 
-
-	std::shared_ptr<Cpu>  getCpu() { return _cpu; }
-
-	std::shared_ptr<Swap> getSwap() { return _swap; }
-
-	std::shared_ptr<Memory> getMemory() { return _memory; }
-
-	std::shared_ptr<LoadAvg> getLoadAvg() { return _loadAvg; }
-
-	std::shared_ptr<Uptime> getUpTime() { return _uptime; }
-
-	std::shared_ptr<ProcTime> getProcTime() { return _procTime; }
-
-	std::shared_ptr<ProcStat> getProcStat() { return _procStat; }
-
-	std::shared_ptr<ProcMem> getProcMem() { return _procMem; }
-
-	std::shared_ptr<ProcCred> getProcCred() { return _procCred; }
-
-	std::shared_ptr<ProcState> getProcState() { return _procState; }
-
-	std::shared_ptr<ProcExe> getProcExe() { return _procExe; }
-
-	std::shared_ptr<ThreadTime> getThreadTime() { return _threadTime; }
-	
+  bool init();
+  
+  bool start();
 private:
-	drill::event::EventLoop    *_loop;
-	std::shared_ptr<CpuInfo>    _cpuInfo;
-	std::shared_ptr<Cpu>        _cpu;
-	std::shared_ptr<Swap>       _swap;
-	std::shared_ptr<Memory>     _memory;
-	std::shared_ptr<LoadAvg>    _loadAvg;
-	std::shared_ptr<Uptime>     _uptime;
-	std::shared_ptr<ProcTime>   _procTime;
-	std::shared_ptr<ProcStat>   _procStat;
-	std::shared_ptr<ProcMem>    _procMem;
-	std::shared_ptr<ProcCred>   _procCred;
-	std::shared_ptr<ProcState>  _procState;
-	std::shared_ptr<ProcExe>    _procExe;
-	std::shared_ptr<ThreadTime> _threadTime;
+  typedef std::map<string, Callback> CommandList;
+  typedef std::map<string, string> HelpList;
+  
+  HttpServer _server;
+  Mutex      _mutex;
+  std::map<string, CommandList> _modules;
+  std::map<string, HelpList>    _helps;
+
 private:
-	void onTimer();
+	void onRequest(const HttpRequest& req, HttpResponse* resp);
 	
 };
 }
