@@ -18,13 +18,13 @@ FILE(GLOB HTTP_HEADER "http/*.h")
 FILE(GLOB MONITOR_SRC "monitor/*.cc")
 FILE(GLOB MONITOR_HEADER "monitor/*.h")
 
-SET(ALL_SRC 
+SET(ALL_SRC
 	${COMMON_SRC}
 	${EVENT_SRC}
 	${NET_SRC}
 	${SERVICE_SRC}
 	${HTTP_SRC}
-	${MONITOR_SRC}
+	#${MONITOR_SRC}
 	)
 
 add_library(drillstatic STATIC ${ALL_SRC} )
@@ -42,6 +42,6 @@ install (FILES ${EVENT_HEADER} DESTINATION include/drill/event)
 install (FILES ${NET_HEADER} DESTINATION include/drill/net)
 install (FILES ${SERVICE_HEADER} DESTINATION include/drill/service)
 install (FILES ${HTTP_HEADER} DESTINATION include/drill/http)
-install (FILES ${MONITOR_HEADER} DESTINATION include/drill/monitor)
+#install (FILES ${MONITOR_HEADER} DESTINATION include/drill/monitor)
 
 install (FILES "${PROJECT_BINARY_DIR}/drill/config/config.h" DESTINATION include/drill/config)
