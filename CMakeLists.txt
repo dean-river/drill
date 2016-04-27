@@ -39,6 +39,7 @@ if(test)
 	 #	enable_testing()
 	 add_subdirectory(test/common)
 	 add_subdirectory(test/http)
+	 add_subdirectory(test/ext)
 endif()
 
 #########################################

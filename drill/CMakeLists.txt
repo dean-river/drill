@@ -43,5 +43,7 @@ install (FILES ${NET_HEADER} DESTINATION include/drill/net)
 install (FILES ${SERVICE_HEADER} DESTINATION include/drill/service)
 install (FILES ${HTTP_HEADER} DESTINATION include/drill/http)
 #install (FILES ${MONITOR_HEADER} DESTINATION include/drill/monitor)
+install(DIRECTORY json DESTINATION include/drill/ext)
+install(DIRECTORY xml DESTINATION include/drill/ext)
 
 install (FILES "${PROJECT_BINARY_DIR}/drill/config/config.h" DESTINATION include/drill/config)
