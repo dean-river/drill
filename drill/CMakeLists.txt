@@ -14,6 +14,8 @@ FILE(GLOB SERVICE_HEADER "service/*.h")
 FILE(GLOB HTTP_SRC "http/*.cc")
 FILE(GLOB HTTP_HEADER "http/*.h")
 
+FILE(GLOB HTTPXX_SRC "httpxx/*.cc")
+FILE(GLOB HTTPXX_HEADER "httpxx/*.h")
 
 FILE(GLOB MONITOR_SRC "monitor/*.cc")
 FILE(GLOB MONITOR_HEADER "monitor/*.h")
@@ -24,6 +26,7 @@ SET(ALL_SRC
 	${NET_SRC}
 	${SERVICE_SRC}
 	${HTTP_SRC}
+	${HTTPXX_SRC}
 	#${MONITOR_SRC}
 	)
 
@@ -42,8 +45,9 @@ install (FILES ${EVENT_HEADER} DESTINATION include/drill/event)
 install (FILES ${NET_HEADER} DESTINATION include/drill/net)
 install (FILES ${SERVICE_HEADER} DESTINATION include/drill/service)
 install (FILES ${HTTP_HEADER} DESTINATION include/drill/http)
+install (FILES ${HTTP_HEADER} DESTINATION include/drill/httpxx)
 #install (FILES ${MONITOR_HEADER} DESTINATION include/drill/monitor)
-install(DIRECTORY json DESTINATION include/drill/ext)
-install(DIRECTORY xml DESTINATION include/drill/ext)
+install(DIRECTORY ext/json DESTINATION include/drill/ext)
+install(DIRECTORY ext/xml DESTINATION include/drill/ext)
 
 install (FILES "${PROJECT_BINARY_DIR}/drill/config/config.h" DESTINATION include/drill/config)

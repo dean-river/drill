@@ -142,6 +142,17 @@ class HttpRequest
   const std::map<string, string>& args() const
   { return _args; }
 
+  string getArg(const string & field) const
+  {
+	string result;
+    std::map<string, string>::const_iterator it = _args.find(field);
+    if (it != _headers.end())
+    {
+      result = it->second;
+    }
+    return result;
+  }
+
   const std::map<string, string>& headers() const
   { return _headers; }
 
