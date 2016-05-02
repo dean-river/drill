@@ -2,6 +2,7 @@
 #define DRILL_HTTPXX_HTTP_RESPONSE_H_
 
 #include <drill/httpxx/http_message.h>
+#include <memory>
 
 namespace drill {
 namespace httpxx {
@@ -16,8 +17,9 @@ namespace httpxx {
     public:
         virtual void clear ();
         int status () const;
-    };
 
+    };
+typedef std::shared_ptr<Response> ResponsePtr;
 }
 }
 

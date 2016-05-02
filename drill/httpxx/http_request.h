@@ -3,6 +3,7 @@
 
 #include <drill/httpxx/http_message.h>
 #include <drill/httpxx/http_method.h>
+#include <memory>
 
 namespace drill {
 namespace httpxx {
@@ -69,7 +70,9 @@ namespace httpxx {
             ( ::http_parser * parser, const char * data, size_t size );
     };
 
+typedef std::shared_ptr<Request> RequestPtr;
 }
+
 }
 
 #endif /* _http_Request__ */

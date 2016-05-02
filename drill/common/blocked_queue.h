@@ -51,7 +51,7 @@ class BlockQueue :noncopyable
 
  private:
   Mutex             _mutex;
-  Cond             _notEmpty;
+  Cond              _notEmpty;
   std::deque<T>     _queue;
 };
 

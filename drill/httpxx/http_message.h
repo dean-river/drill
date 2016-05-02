@@ -52,7 +52,8 @@ namespace httpxx {
 		const Headers& headers() const;
 
         bool shouldKeepAlive () const;
-		bool        isValid();
+		bool         isValid();
+		const Error& getError() const;
     private:
         Message& operator= ( const Message& );
 		Message ( const Message& );

@@ -8,7 +8,8 @@ class SessionBuilder {
 public:
 	virtual ~SessionBuilder() {}
 
-	virtual bool build(HttpSession  *s) = 0;
+	virtual bool build(HttpServerSessionPtr &s)  = 0;
+	virtual bool clear(HttpServerSessionPtr &s)  = 0;
 };
 
 }

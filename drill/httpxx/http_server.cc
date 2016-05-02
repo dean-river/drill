@@ -1,5 +1,6 @@
 #include <drill/httpxx/http_server.h>
 #include <drill/httpxx/http_session.h>
+#include <memory>
 
 using namespace drill::net;
 using namespace drill::common;
@@ -26,46 +27,34 @@ void HttpServer::onConnection(const TcpConnectionPtr& conn)
 {
 	if(conn->connected()) {
 		assert(_builder);
-		HttpSession *session = new HttpSession();
-		if(!_builder(session)) {
+		HttpServerSessionPtr session(new HttpServerSession(conn, true));
+		if(!_builder->build(session)) {
 			conn->shutdown();
 		}
-		string addr = conn->peerAddress().toString();
+		//string addr = conn->peerAddress().toString();
 		conn->setContext(session);
+		
 	} else {
 		any *mc = conn->getMutableContext();
-		HttpSession *s = static_cast<HttpSession*>(mc);
-		delete s;
+		HttpServerSessionPtr s = static_cast<HttpServerSessionPtr>(*mc);
+		_builder->clear(s);
 	}
 	
 }
 void HttpServer::onWriteComplete(const TcpConnectionPtr& conn)
 {
 	any *mc = conn->getMutableContext();
-	HttpSession *s = static_cast<HttpSession*>(mc);
-	if(s->closeConnection()) {
-		delete s;
-		conn->shutdown();
-	}
+	HttpServerSessionPtr s = static_cast<HttpServerSessionPtr>(*mc);
+	s->onSendComplete();
 }
 
 void HttpServer::onMessage(const TcpConnectionPtr& conn,
 				Buffer* buf, Time receiveTime)
 {
 	any *mc = conn->getMutableContext();
-	HttpSession *s = static_cast<HttpSession*>(mc);
+	HttpServerSessionPtr s = static_cast<HttpServerSessionPtr>(*mc);
 
-	while(buf->readableBytes()) {
-		if(!s->parseRequest(buf,receiveTime)) {
-			conn.send(s->processBadRequest());
-			conn->shutdown();
-			return;
-		}
-
-		if(s->getCurrentRequest()) {
-			s->handleRequest();
-		}
-	}
+	s->parseMessage(buf,receiveTime));
 }
 
 }

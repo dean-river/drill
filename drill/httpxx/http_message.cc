@@ -215,6 +215,10 @@ namespace httpxx {
 	{
 		return _error.isValid();
 	}
+	const Error& Message::getError() const
+	{
+		return _error;
+	}
 
 }
 }

@@ -3,6 +3,7 @@
 
 #include <drill/httpxx/http_message_builder.h>
 #include <drill/httpxx/http_response.h>
+#include <memory>
 namespace drill {
 namespace httpxx {
 	class ResponseBuilder : public MessageBuilder
@@ -36,10 +37,15 @@ namespace httpxx {
 		 * Gets a full string representation of the HTTP response.
 		 */
 		std::string toString() const;
+
+		virtual bool isSendComplete();
+
+		virtual bool sendMessage(std::string &mes);
 		
 	private:
 		int _status;
 	};
+	typedef std::shared_ptr<ResponseBuilder> ResponseBuilderPtr;
 }
 }
 #endif 

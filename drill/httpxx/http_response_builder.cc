@@ -127,8 +127,20 @@ namespace httpxx {
 		std::string str(statusLine());
 		str += headersToString();
 		str += "\r\n";
-
 		return str;
 	}
+	bool ResponseBuilder::isSendComplete()
+	{
+		return true;
+	}
+	
+	bool ResponseBuilder::sendMessage(std::string &mes)
+	{
+		mes += statusLine();
+		mes += headersToString();
+		mes += "\r\n";
+		return true;
+	}
+
 }
 }
