@@ -5,6 +5,10 @@
 * common
 
 ## build and install
+		>cd $project_root_dir
+		>cd lib/gtest-1.6.0
+		>cmake .
+		>make
         >cd $project_root_dir
         >mkdir build
         >cd build
