@@ -14,7 +14,8 @@ include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR}) #for config.h
 
 add_subdirectory(drill)
-
+add_subdirectory(live_dispatch)
+add_subdirectory(live_dispatch_async)
 
 #########################################
 # build test
