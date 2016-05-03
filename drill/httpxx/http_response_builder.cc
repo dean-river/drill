@@ -71,7 +71,7 @@ static StatusCodes gStatusCodes;
 namespace drill {
 namespace httpxx {
 	ResponseBuilder::ResponseBuilder() : 
-		MessageBuilder(), _status(400)
+		MessageBuilder(), _status(400), _close(true)
 	{
 
 	}
@@ -133,7 +133,15 @@ namespace httpxx {
 	{
 		return true;
 	}
-	
+	void ResponseBuilder::setClose(bool isclose)
+	{
+		_close = isclose;
+	}
+
+	bool ResponseBuilder::ifClose()
+	{
+		return _close;
+	}
 	bool ResponseBuilder::sendMessage(std::string &mes)
 	{
 		mes += statusLine();

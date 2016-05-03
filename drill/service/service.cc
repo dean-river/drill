@@ -106,7 +106,7 @@ int Service::main(int argc, char* argv[])
 	}
 
 	 _confFile =  _args.get<string>("config");
-	 if(!_conf.loadProperties(_confFile.c_str(), '=', false)) {
+	 if(_conf.loadProperties(_confFile.c_str(), '=', false) != 0 ) {
 		cout<<"Config file load error to check config file"<<endl;
 		exit(1);
 	 }
@@ -176,7 +176,6 @@ void Service::runDaemon()
 	fd = dup2(1,2);
 	assert( fd == 2 ); 
 	(void)fd;
-	_workdir = _conf.getValue("service_work_dir", "");
 	if(!_workdir.empty()) {
 		int ret = chdir(_workdir.c_str());
 		(void)ret;
@@ -211,6 +210,7 @@ void Service::start()
 			exit(0);
 	}
 
+	_workdir = _conf.getValue("service_work_dir", "");
 	if(!fileExist(_workdir)) {
 		cout<<"working dir not exist"<<endl;
 		exit(0);

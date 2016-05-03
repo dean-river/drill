@@ -4,7 +4,6 @@
 #include <drill/common/buffer.h>
 #include <drill/common/time.h>
 #include <drill/common/blocked_queue.h>
-#include <drill/httpxx/http_message_factory.h>
 #include <drill/httpxx/http_request.h>
 #include <drill/httpxx/http_response_builder.h>
 #include <drill/net/tcp_connection.h>
@@ -22,9 +21,10 @@ namespace httpxx {
 
 class HttpServerSession;
 typedef std::function<bool(RequestPtr, HttpServerSession*)>  RequestReady;
-typedef std::function<bool(ResponseBuilderPtr, RequestPtr)>         ResponseWriteComplete;
+typedef std::function<bool(ResponseBuilderPtr&, RequestPtr&)>  ResponseWriteComplete;
+typedef std::function<bool(ResponseBuilderPtr&, std::string&)> ResponseWrite;
 typedef std::function<bool(HttpServerSession*)>              SessionCB;
-
+typedef std::function<RequestPtr()>                          RequestFactory;                         
 class HttpServerSession {
 public:
 	HttpServerSession(const TcpConnectionPtr &con);
@@ -32,9 +32,7 @@ public:
 
 	void setContext(any & c);
 
-	void setMessageFactory(MessageFactor *factor);
-
-	MessageFactor *getMessageFactory();
+	void setRequestCreate(const RequestFactory &factor);
 	
 	bool parseMessage(Buffer *buf, Time &recvtime);
 
@@ -51,9 +49,12 @@ public:
 	
 
 	void setClose(bool ifclose);
-	
+	//must set
 	void setRequestReadyCB(const RequestReady &cb);
+	//must set
 	void setResponseWriteComplete(const ResponseWriteComplete &cb);
+	void setResponseWrite(const ResponseWrite &cb);
+	// not must set
 	void setOnParseError(const SessionCB &cb);
 private:
 	void sendMessageInloop();
@@ -63,9 +64,11 @@ private:
 	RequestReady                   _reqReady;
 	ResponseWriteComplete          _resWriteComplete;
 	SessionCB                      _onParseError;
+	RequestFactory                 _factory;
+	ResponseWrite                  _resWrite;
+	
 private:
 	std::weak_ptr<TcpConnection>    _conn;
-	MessageFactor                  *_factory;
 	bool                            _close;
 	Time                            _lastRecv;
 	any                             _context;

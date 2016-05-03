@@ -33,6 +33,9 @@ namespace httpxx {
 		 */
 		std::string statusLine() const;
 
+		void setClose(bool isclose);
+
+		bool ifClose();
 		/*
 		 * Gets a full string representation of the HTTP response.
 		 */
@@ -44,6 +47,7 @@ namespace httpxx {
 		
 	private:
 		int _status;
+		bool _close;
 	};
 	typedef std::shared_ptr<ResponseBuilder> ResponseBuilderPtr;
 }

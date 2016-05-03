@@ -16,7 +16,10 @@ using namespace drill::event;
 namespace drill {
 namespace httpxx {
 	
-class SessionBuilder;
+class HttpServerSession;
+
+typedef std::function<bool(HttpServerSession*)> HttpSessionHadnler;
+
 class HttpServer 
 {
  public:
@@ -30,9 +33,14 @@ class HttpServer
   EventLoop* getLoop() const { return _server.getLoop(); }
 
   /// Not thread safe, callback be registered before calling start().
-  void setSessionBuilder(SessionBuilder *b)
+  void setSessionBuilder(const HttpSessionHadnler &b)
   {
 	 _builder = b;
+  }
+
+  void setSessionClear(const HttpSessionHadnler &b)
+  {
+	 _clear = b;
   }
 
   void setThreadNum(int numThreads)
@@ -48,9 +56,10 @@ class HttpServer
                  Buffer* buf, Time receiveTime);
   void onWriteComplete(const TcpConnectionPtr& conn);
   
- private:	
-  TcpServer       _server;
-  SessionBuilder *_builder;
+ private:
+  TcpServer          _server;
+  HttpSessionHadnler _builder;
+  HttpSessionHadnler _clear;
 };
 
 }

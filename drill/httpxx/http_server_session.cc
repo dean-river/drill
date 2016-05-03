@@ -12,7 +12,7 @@ HttpServerSession::HttpServerSession(const TcpConnectionPtr &con)
 {
 	_conn = con;
 	_factory = NULL;
-	_close = true;
+	_close = false;
 }
 
 HttpServerSession::~HttpServerSession()
@@ -32,7 +32,7 @@ bool HttpServerSession::parseMessage(Buffer *buf, Time &recvtime)
 	while(buf->readableBytes()) {
 
 		if(!_currentRequest) {
-			_currentRequest = _factory->createRequest();
+			_currentRequest = _factory();
 			if(!_currentRequest) {
 			LOG_ERROR<<"create request error";
 			return false;
@@ -99,7 +99,7 @@ void HttpServerSession::sendMessageInloop()
 	}
 
 	std::string mes;
-	_currentResponse->sendMessage(mes);
+	_resWrite(_currentResponse, mes);
 	TcpConnectionPtr cn = _conn.lock();
 	if(cn) {
 		cn->send(mes);
@@ -122,10 +122,16 @@ void HttpServerSession::sendMessage()
 
 void HttpServerSession::onSendComplete()
 {
+	if(!isSendComplete()) {
+			sendMessage();
+			return;
+	}
+	if(_currentResponse) {
 		RequestPtr req = _reqQueue.take();
 		if(_currentResponse->isSendComplete()) {
 			if(_resWriteComplete) {
 				_resWriteComplete(_currentResponse, req);
+				_close = _currentResponse->ifClose();
 				_currentResponse.reset();	
 			}	
 		}
@@ -137,10 +143,13 @@ void HttpServerSession::onSendComplete()
 			}
 			return ;
 		}
-		if(!isSendComplete()) {
-			sendMessage();
-		}
+	}
+
 		
+}
+void HttpServerSession::setResponseWrite(const ResponseWrite &cb)
+{
+	_resWrite = cb;
 }
 
 void HttpServerSession::setRequestReadyCB(const RequestReady &cb)
@@ -157,6 +166,10 @@ void HttpServerSession::setOnParseError(const SessionCB &cb)
 	_onParseError = cb;
 }
 
+void HttpServerSession::setRequestCreate(const RequestFactory &factor)
+{
+	_factory = factor;
+}
 
 bool HttpServerSession::closeConnection()
 {

@@ -1,6 +1,5 @@
 #include <drill/httpxx/http_server.h>
 #include <drill/httpxx/http_server_session.h>
-#include <drill/httpxx/http_session_builder.h>
 
 #include <memory>
 
@@ -29,8 +28,8 @@ void HttpServer::onConnection(const TcpConnectionPtr& conn)
 {
 	if(conn->connected()) {
 		assert(_builder);
-		HttpServerSessionPtr session(new HttpServerSession(conn));
-		if(!_builder->build(session)) {
+		HttpServerSession *session = new HttpServerSession(conn);
+		if(!_builder(session)) {
 			conn->shutdown();
 		}
 		//string addr = conn->peerAddress().toString();
@@ -38,27 +37,36 @@ void HttpServer::onConnection(const TcpConnectionPtr& conn)
 		
 	} else {
 		any *mc = conn->getMutableContext();
-		HttpServerSessionPtr *p = reinterpret_cast<HttpServerSessionPtr*>(mc);
-		HttpServerSessionPtr  s(*p);
-		_builder->clear(s);
+		HttpServerSession *p = any_cast<HttpServerSession*>(*mc);
+		_clear(p);
+		delete p;
+		
 	}
 	
 }
 void HttpServer::onWriteComplete(const TcpConnectionPtr& conn)
 {
 	any *mc = conn->getMutableContext();
-	HttpServerSessionPtr *p = reinterpret_cast<HttpServerSessionPtr*>(mc);
-	HttpServerSessionPtr  s(*p);
-	s->onSendComplete();
+	HttpServerSession *p = any_cast<HttpServerSession*>(*mc);
+	p->onSendComplete();
 }
 
 void HttpServer::onMessage(const TcpConnectionPtr& conn,
 				Buffer* buf, Time receiveTime)
 {
 	any *mc = conn->getMutableContext();
-	HttpServerSessionPtr *p = reinterpret_cast<HttpServerSessionPtr*>(mc);
-	HttpServerSessionPtr  s(*p);
-	s->parseMessage(buf,receiveTime);
+	HttpServerSession *p = any_cast<HttpServerSession*>(*mc);
+
+	p->parseMessage(buf,receiveTime);
+}
+
+HttpServer::~HttpServer()
+{
+
+}
+void HttpServer::start()
+{
+	_server.start();
 }
 
 }
