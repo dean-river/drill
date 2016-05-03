@@ -22,12 +22,12 @@ namespace httpxx {
 
 class HttpServerSession;
 typedef std::function<bool(RequestPtr, HttpServerSession*)>  RequestReady;
-typedef std::function<bool(ResponsePtr, RequestPtr)>         ResponseWriteComplete;
+typedef std::function<bool(ResponseBuilderPtr, RequestPtr)>         ResponseWriteComplete;
 typedef std::function<bool(HttpServerSession*)>              SessionCB;
 
 class HttpServerSession {
 public:
-	HttpServerSession(TcpConnectionPtr &con);
+	HttpServerSession(const TcpConnectionPtr &con);
 	virtual ~HttpServerSession();
 
 	void setContext(any & c);
@@ -42,7 +42,7 @@ public:
 
 	void postResponse(const ResponseBuilderPtr & res);
 
-	bool sendMessage();
+	void sendMessage();
 
 	void onSendComplete();
 

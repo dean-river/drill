@@ -3,6 +3,7 @@
 
 #include <drill/httpxx/http_message_builder.h>
 #include <drill/httpxx/http_request.h>
+#include <memory>
 
 namespace drill {
 namespace httpxx {
@@ -65,6 +66,8 @@ namespace httpxx {
 		Method _method;
 		std::string _url;
 	};
+
+	typedef std::shared_ptr<RequestBuilder> RequestBuilderPtr;
 }
 }
 #endif /* _http_Request_builder__ */

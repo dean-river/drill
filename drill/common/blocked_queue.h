@@ -43,7 +43,7 @@ class BlockQueue :noncopyable
     return front;
   }
 
-  size_t size() const
+  size_t size()
   {
     ScopedMutex lock(&_mutex);
     return _queue.size();

@@ -1,13 +1,16 @@
-#include <drill/httpxx/http_session.h>
-#include <driil/event/event_loop.h>
+#include <drill/httpxx/http_server_session.h>
+#include <drill/event/event_loop.h>
+#include <drill/common/logger.h>
+
 using namespace drill::event;
 using namespace drill::net;
 
 namespace drill {
 namespace httpxx {
 
-HttpServerSession::HttpServerSession(TcpConnectionPtr &con)
+HttpServerSession::HttpServerSession(const TcpConnectionPtr &con)
 {
+	_conn = con;
 	_factory = NULL;
 	_close = true;
 }
@@ -38,7 +41,7 @@ bool HttpServerSession::parseMessage(Buffer *buf, Time &recvtime)
 
 		used = _currentRequest->feed(buf->peek(), buf->readableBytes());
 		buf->retrieve(used);
-		if(!_currentRequest->isvalid()) {
+		if(!_currentRequest->isValid()) {
 			processBadRequest();
 			return false;
 		}
@@ -57,17 +60,20 @@ void HttpServerSession::processBadRequest()
 	if(_onParseError) {
 		_onParseError(this);
 	}
-	_conn->send(badReq);
-	_close = true;
-	_conn->shutdown();
+	TcpConnectionPtr cn = _conn.lock();
+	if(cn) {
+		cn->send(badReq);
+		_close = true;
+		cn->shutdown();
+	}
 }
 
 bool HttpServerSession::gotCurrentMessage()
 {
-	return _currentRequest->complete() : _currentResponse->complete();
+	return _currentRequest->complete();
 }
 
-void HttpServerSession::postResponse(ResponseBuilderPtr & res)
+void HttpServerSession::postResponse(const ResponseBuilderPtr & res)
 {
 	_resQueue.put(res);
 	sendMessage();
@@ -81,10 +87,10 @@ bool HttpServerSession::isSendComplete()
 	if(_resQueue.size()) {
 		return false;
 	}
-	return true
+	return true;
 }
 
-bool HttpServerSession::sendMessageInloop()
+void HttpServerSession::sendMessageInloop()
 {
 	if(!_currentResponse) {
 		if(_resQueue.size()) {
@@ -92,15 +98,21 @@ bool HttpServerSession::sendMessageInloop()
 		}
 	}
 
-	std::stirng mes;
+	std::string mes;
 	_currentResponse->sendMessage(mes);
-	_conn->send(mes);
+	TcpConnectionPtr cn = _conn.lock();
+	if(cn) {
+		cn->send(mes);
+	}
 	
-	return true;
 }
 void HttpServerSession::sendMessage()
 {
-	EventLoop *loop = _conn->getLoop();
+	TcpConnectionPtr cn = _conn.lock();	
+	if(!cn) {
+		return;
+	}
+	EventLoop *loop = cn->getLoop();
 	if(loop->isInLoopThread()) {
 		sendMessageInloop();
 	} else {
@@ -119,7 +131,10 @@ void HttpServerSession::onSendComplete()
 		}
 		
 		if(_close) {
-			_conn->shutdown();
+			TcpConnectionPtr cn = _conn.lock();
+			if(cn) {
+				cn->shutdown();
+			}
 			return ;
 		}
 		if(!isSendComplete()) {
@@ -132,7 +147,7 @@ void HttpServerSession::setRequestReadyCB(const RequestReady &cb)
 {
 	_reqReady = cb;
 }
-void HttpServerSession::setResponseWriteComplelte(const ResponseWriteComplete &cb)
+void HttpServerSession::setResponseWriteComplete(const ResponseWriteComplete &cb)
 {
 	_resWriteComplete = cb;
 }
