@@ -73,5 +73,15 @@ namespace httpxx {
 		
 		return str;
 	}
+ 	bool RequestBuilder::isSendComplete()
+ 	{
+		return true;
+	}
+
+	bool RequestBuilder::sendMessage(std::string &mes)
+	{
+		mes = toString();
+		return true;
+	}
 }
 }

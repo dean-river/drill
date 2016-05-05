@@ -20,11 +20,11 @@ namespace drill {
 namespace httpxx {
 
 class HttpServerSession;
-typedef std::function<bool(RequestPtr, HttpServerSession*)>  RequestReady;
+typedef std::function<bool(RequestPtr, HttpServerSession*)>    RequestReady;
 typedef std::function<bool(ResponseBuilderPtr&, RequestPtr&)>  ResponseWriteComplete;
 typedef std::function<bool(ResponseBuilderPtr&, std::string&)> ResponseWrite;
-typedef std::function<bool(HttpServerSession*)>              SessionCB;
-typedef std::function<RequestPtr()>                          RequestFactory;                         
+typedef std::function<bool(HttpServerSession*)>               SessionCB;
+typedef std::function<RequestPtr()>                           RequestFactory;                         
 class HttpServerSession {
 public:
 	HttpServerSession(const TcpConnectionPtr &con);

@@ -36,11 +36,11 @@ class Channel {
   int fd() const { return _fd; }
   int events() const { return _events; }
   void set_revents(int revt) { _revents = revt; } // used by pollers
-  // int revents() const { return revents_; }
+  int revents() const { return _revents; }
   bool isNoneEvent() const { return _events == kNoneEvent; }
 
   void enableReading() { _events |= kReadEvent; update(); }
-  // void disableReading() { events_ &= ~kReadEvent; update(); }
+  void disableReading() { _events &= ~kReadEvent; update(); }
   void enableWriting() { _events |= kWriteEvent; update(); }
   void disableWriting() { _events &= ~kWriteEvent; update(); }
   void disableAll() { _events = kNoneEvent; update(); }

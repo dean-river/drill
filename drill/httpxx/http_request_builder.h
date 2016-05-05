@@ -62,6 +62,10 @@ namespace httpxx {
 		 */
 		std::string toString() const;
 
+		virtual bool isSendComplete();
+
+		virtual bool sendMessage(std::string &mes);
+
 	private:
 		Method _method;
 		std::string _url;

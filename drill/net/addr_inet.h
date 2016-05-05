@@ -52,6 +52,8 @@ public:
 
 	uint32_t ip();
 
+	std::string ipStr();
+
 	bool operator == (const AddrInet &rhs) const;
 
 	bool operator != (const AddrInet &rhs) const;

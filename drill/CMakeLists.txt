@@ -17,8 +17,14 @@ FILE(GLOB HTTP_HEADER "http/*.h")
 FILE(GLOB HTTPXX_SRC "httpxx/*.cc")
 FILE(GLOB HTTPXX_HEADER "httpxx/*.h")
 
-FILE(GLOB MONITOR_SRC "monitor/*.cc")
+FILE(GLOB MONITOR_SRC "monitor/*.[c]c")
 FILE(GLOB MONITOR_HEADER "monitor/*.h")
+
+FILE(GLOB REDIS_SRC "ext/redis/*.[c]c")
+FILE(GLOB REDIS_HEADER "ext/redis/*.h")
+
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib)
 
 SET(ALL_SRC
 	${COMMON_SRC}
@@ -27,15 +33,16 @@ SET(ALL_SRC
 	${SERVICE_SRC}
 	${HTTP_SRC}
 	${HTTPXX_SRC}
-	#${MONITOR_SRC}
+	#${REDIS_SRC}
 	)
 
 add_library(drillstatic STATIC ${ALL_SRC} )
 set_target_properties(drillstatic PROPERTIES OUTPUT_NAME drill)
-
+#target_link_libraries(drillstatic hiredis)
 if(enable_dynamic)
 	add_library(drillshared SHARED ${ALL_SRC})
 	set_target_properties(drillshared PROPERTIES OUTPUT_NAME drill)
+	#target_link_libraries(drillshared hiredis)
 endif()
 
 install(TARGETS drillstatic drillshared DESTINATION lib)
