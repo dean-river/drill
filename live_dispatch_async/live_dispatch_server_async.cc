@@ -83,7 +83,7 @@ namespace detail {
 		std::shared_ptr<BufferedRequest> ret(new BufferedRequest);
 		return ret;
 	}
-	bool onRequestReady(RequestPtr &req, HttpServerSession *hss)
+	bool onRequestReady(RequestPtr req, HttpServerSession *hss)
 	{
 		BufferedRequest *r = (BufferedRequest*)(req.get());
 		LiveResponseBuilder *lres = new LiveResponseBuilder();
@@ -99,8 +99,9 @@ namespace detail {
 		return true;
 	}
 
-	bool onResponseWriteComplete(ResponseBuilderPtr res, RequestPtr)
+	bool onResponseWriteComplete(ResponseBuilderPtr& res, RequestPtr & req)
 	{
+		(void)req;
 		res->setClose(false);
 		return true;
 	}
